@@ -67,7 +67,7 @@ function setup () {
   //serial.on('data', gotData);
 
   var client = mqtt.connect('mqtt://ac4b9437:253599623a0a0034@broker.shiftr.io', {
-    clientId: 'javascript'
+    clientId: 'vizinviz-circle-displace-mqtt'
   });
   console.log('client', client);
 
