@@ -41,7 +41,7 @@ var easedTemperature = 0;
 var tempertureLabel = "T";
 
 // Declare a "SerialPort" object
-let serial;
+//let serial;
 // fill in the name of your serial port here:
 let portName = "/dev/tty.usbmodem1411";
 
@@ -51,20 +51,38 @@ function setup () {
   circleColor = color(0, 0, 0, circleAlpha);
 
   // make an instance of the SerialPort object
-  serial = new p5.SerialPort();
+  //serial = new p5.SerialPort();
 
   // Get a list the ports available
   // You should have a callback defined to see the results. See gotList, below:
-  serial.list();
+  //serial.list();
 
   // Assuming our Arduino is connected,  open the connection to it
-  serial.open(portName);
+  //serial.open(portName);
 
   // When you get a list of serial ports that are available
-  serial.on('list', gotList);
+  //serial.on('list', gotList);
 
   // When you some data from the serial port
-  serial.on('data', gotData);
+  //serial.on('data', gotData);
+
+  var client = mqtt.connect('mqtt://ac4b9437:253599623a0a0034@broker.shiftr.io', {
+    clientId: 'javascript'
+  });
+  console.log('client', client);
+
+  client.on('connect', function () {
+    console.log('client has connected!');
+
+    client.subscribe('/temperature');
+    // client.unsubscribe('/example');
+  });
+
+  client.on('message', function(topic, message) {
+    console.log('new message:', topic, message.toString());
+    temperature = +message.toString();
+    //console.log(message);
+  });
 }
 
 
@@ -82,7 +100,7 @@ function draw () {
   noFill();
 
   easedTemperature = ease(easedTemperature, temperature);
-  var temperatureScale = map(easedTemperature, 25, 30, 0, 50);
+  var temperatureScale = map(easedTemperature, 20, 30, 0, 50);
   temperatureScale = constrain(temperatureScale, 0, 100);
 
   textSize(350);
@@ -151,28 +169,28 @@ function keyReleased () {
 
 
 // Got the list of ports
-function gotList (thelist) {
-  print("List of Serial Ports:");
-  // theList is an array of their names
-  for (let i = 0; i < thelist.length; i++) {
-    // Display in the console
-    print(i + " " + thelist[i]);
-  }
-}
+// function gotList (thelist) {
+//   print("List of Serial Ports:");
+//   // theList is an array of their names
+//   for (let i = 0; i < thelist.length; i++) {
+//     // Display in the console
+//     print(i + " " + thelist[i]);
+//   }
+// }
 
 // Called when there is data available from the serial port
-function gotData () {
-  let currentString = serial.readLine();  // read the incoming data
-  trim(currentString);                    // trim off trailing whitespace
-  if (!currentString) return;             // if the incoming string is empty, do no more
-  console.log(currentString);
-  if (!isNaN(currentString)) {  // make sure the string is a number (i.e. NOT Not a Number (NaN))
-    temperature = +currentString;   // save the currentString to use for the text position in draw()
-  }
-  else {
-    console.log('we have nan: ' + currentString);
-  }
-}
+// function gotData () {
+//   let currentString = serial.readLine();  // read the incoming data
+//   trim(currentString);                    // trim off trailing whitespace
+//   if (!currentString) return;             // if the incoming string is empty, do no more
+//   console.log(currentString);
+//   if (!isNaN(currentString)) {  // make sure the string is a number (i.e. NOT Not a Number (NaN))
+//     temperature = +currentString;   // save the currentString to use for the text position in draw()
+//   }
+//   else {
+//     console.log('we have nan: ' + currentString);
+//   }
+// }
 
 function ease (n, target) {
   var easing = 0.05;
