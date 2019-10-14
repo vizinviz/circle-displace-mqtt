@@ -15,7 +15,7 @@ function setup () {
   noFill();
   circleColor = color(0, 0, 0, circleAlpha);
 
-  var client = mqtt.connect('mqtt://e5df5771:cb6254233fc054d1@broker.shiftr.io', {
+  var client = mqtt.connect('mqtt://aeba5ae7:98e21bb6bccdb957@broker.shiftr.io', {
     clientId: 'vizinviz-circle-displace-mqtt'
   });
   console.log('client', client);
