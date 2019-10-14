@@ -10,6 +10,7 @@ var temperature = 0;
 var easedTemperature = 0;
 var tempertureLabel = "T";
 
+
 function setup () {
   createCanvas(windowWidth, windowHeight);
   noFill();
@@ -28,6 +29,7 @@ function setup () {
   client.on('message', function(topic, message) {
     console.log('new message:', topic, message.toString());
     temperature = +message.toString();
+  
   });
 }
 
