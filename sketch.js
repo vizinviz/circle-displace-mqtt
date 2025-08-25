@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var tileCount = 40;
 var actRandomSeed = 0;
@@ -10,33 +10,34 @@ var temperature = 0;
 var easedTemperature = 0;
 var tempertureLabel = "T";
 
-
-function setup () {
+function setup() {
   createCanvas(windowWidth, windowHeight);
   noFill();
   circleColor = color(0, 0, 0, circleAlpha);
 
-  var client = mqtt.connect('mqtt://aeba5ae7:98e21bb6bccdb957@broker.shiftr.io', {
-    clientId: 'vizinviz-circle-displace-mqtt'
-  });
-  console.log('client', client);
+  // var client = mqtt.connect('mqtt://aeba5ae7:98e21bb6bccdb957@broker.shiftr.io', {
+  //   clientId: 'vizinviz-circle-displace-mqtt'
+  // });
+  var client = mqtt.connect(
+    "wss://candycrow861:K15rUX348apFpujl@candycrow861.cloud.shiftr.io",
+    {
+      clientId: "p5js-temperature-viz",
+    }
+  );
+  console.log("client", client);
 
-  client.on('connect', function () {
-    console.log('client has connected!');
-    client.subscribe('/temperature');
+  client.on("connect", function () {
+    console.log("client has connected!");
+    client.subscribe("/temperature");
   });
 
-  client.on('message', function(topic, message) {
-    console.log('new message:', topic, message.toString());
+  client.on("message", function (topic, message) {
+    console.log("new message:", topic, message.toString());
     temperature = +message.toString();
-  
   });
 }
 
-
-
-function draw () {
-
+function draw() {
   push();
   translate(width / tileCount / 2, height / tileCount / 2);
 
@@ -53,18 +54,16 @@ function draw () {
 
   textSize(350);
   textAlign(CENTER, CENTER);
-  textFont('Relevant');
+  textFont("Relevant");
   noStroke();
-  fill('DeepPink');
+  fill("DeepPink");
   textStyle(BOLD);
-  text(round(temperature) + '\u00B0', width / 2, height / 2);
+  text(round(temperature) + "\u00B0", width / 2, height / 2);
 
   for (var gridY = 0; gridY < tileCount; gridY++) {
     for (var gridX = 0; gridX < tileCount; gridX++) {
-
-      var posX = width / tileCount * gridX;
-      var posY = height / tileCount * gridY;
-
+      var posX = (width / tileCount) * gridX;
+      var posY = (height / tileCount) * gridY;
 
       //console.log(easedTemperature,temperature,temperatureScale);
       //console.log('temperatureSCale',temperatureScale);
@@ -86,22 +85,20 @@ function draw () {
 
       stroke(0);
       strokeWeight(2);
-
     }
   }
   pop();
-
 }
 
-function mousePressed () {
+function mousePressed() {
   actRandomSeed = random(100000);
 }
 
-function keyReleased () {
-  if (key == 's' || key == 'S') saveCanvas(gd.timestamp(), 'png');
+function keyReleased() {
+  if (key == "s" || key == "S") saveCanvas(gd.timestamp(), "png");
 }
 
-function ease (n, target) {
+function ease(n, target) {
   var easing = 0.05;
   var d = target - n;
   return n + d * easing;
